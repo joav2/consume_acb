@@ -1,5 +1,8 @@
 package br.com.sistema.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.net.ssl.SSLException;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,9 +15,11 @@ import org.springframework.ui.Model;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
 
+import br.com.sistema.util.Codes;
 import br.com.sistema.util.RestPageImpl;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -101,10 +106,31 @@ public class MainController {
 		.retrieve()
 		.bodyToMono(Object.class);
 		
-//		System.out.println(c.block());
+		System.out.println(c.block());
 		view.addObject("produto", c.block());
 		
 		return view;
+	}
+	
+	@PostMapping("/pedido")
+	public String pedido(Codes codes) {
+		System.out.println(codes.getCodigo()+" || "+codes.getQuantidade());
+		List<Codes> cods = new ArrayList<Codes>();
+		cods.add(codes);
+		try {
+			Mono<List<?>> c = createWebClient()
+					.post()
+					.uri("/api/pedido")
+					.accept(MediaType.APPLICATION_JSON)
+					.body(Mono.just(cods), new ParameterizedTypeReference<List<?>>() {})
+					.retrieve()
+					.bodyToMono(new ParameterizedTypeReference<List<?>>() {}).log();
+			c.block().forEach(System.out::println);
+		} catch (Exception e) {
+			System.out.println("errorPost"+e.getMessage());
+		}
+		
+		return "redirect:/";
 	}
 
 }

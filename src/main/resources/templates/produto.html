@@ -1,40 +1,41 @@
 <!doctype html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Produto</title>
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
-	crossorigin="anonymous">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Produto</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 </head>
+
 <body>
 	<div class="container">
-		<div class="row">
-			<div class="col-sm-2 col m-3">
-				<div class="card">
-					<div th:each="i : ${produto.imagems}">
-						<img class="card-img-top" alt="..."
-							th:src="@{https://localhost:8443{path}(path=${i.nome})}" />
+		<div class="card container">
+			<div class="row overflow-auto" style="height: 250px;">
+				<th:block th:each="i : ${produto.imagems}">
+					<div class="col-6 col-sm-3">
+						<img class="card-img-top" alt="..." th:src="@{https://localhost:8443{path}(path=${i.nome})}" />
 					</div>
-					<div>
-						<img class="card-img-top" alt="..." src="/empty.webp" />
-					</div>
-					<div class="card-body">
-						<h5 class="card-title">[[${produto.nome}]]</h5>
-						<p class="card-text">[[${produto.preco}]]</p>
-						<a th:href="@{/produto/{id}(id=${produto.id})}"
-							class="btn btn-primary">Go somewhere</a>
-					</div>
-				</div>
+				</th:block>
+			</div>
+			<div class="card-body">
+				<h5 class="card-title">[[${produto.nome}]]</h5>
+				<p class="card-text">[[${produto.preco}]]
+				[[${produto.descricao}]]
+				Peso:[[${produto.peso}]]
+				</p>
+				<form th:action="@{/pedido}" method="post" th:object="${codes}">
+					<input type="hidden" name="codigo" th:value="${produto.codigo}">
+					<input type="number" name="quantidade">
+					<button class="btn btn-primary">Go somewhere</button>
+				</form>
 			</div>
 		</div>
 	</div>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
 		crossorigin="anonymous"></script>
 </body>
+
 </html>
